@@ -60,7 +60,7 @@ This project uses GitHub Actions for continuous integration, model training, and
 - **Hugging Face Upload**: Pushes fine-tuned model and tokenizer to HF Hub with model card (requires `HF_TOKEN` secret).
 - **Docker Build**: Builds and pushes image to Docker Hub and GHCR on main branch.
 
-Workflows: `.github/workflows/ci.yml` (CI/training), `.github/workflows/docs.yml` (MkDocs deployment to GitHub Pages on harpertoken branch)
+Workflows: `.github/workflows/ci.yml` (CI/training), `.github/workflows/docs.yml` (MkDocs deployment to GitHub Pages on main branch)
 
 ## Docker
 

@@ -3,6 +3,7 @@
 [![Python](https://img.shields.io/badge/Python-3.14+-blue.svg)](https://www.python.org/downloads/)
 [![Version](https://img.shields.io/badge/Version-0.1.0-orange.svg)]()
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Docs](https://img.shields.io/badge/Docs-live-3ea6be.svg)](https://coccinella-labs.github.io/harpertoken/)
 
 This project provides scripts to fine-tune the `harpertokenConvAI` model (a DistilBERT-based question answering model) on a subset of the SQuAD dataset, optimized for Mac M1 with 8GB RAM using MPS acceleration.
 
