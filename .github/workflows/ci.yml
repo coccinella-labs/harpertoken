@@ -72,6 +72,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Tags are required so the "version already released" check below
+          # can see them. Without this, checkout is shallow and tag-less,
+          # the check always reports exists=false, and every push to main
+          # tries to rebuild and republish an already released version.
+          fetch-depth: 0
 
       - name: Extract version
         id: version
@@ -87,20 +93,23 @@ jobs:
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Skip if version already released
+      - name: Report if version already released
         if: steps.check_tag.outputs.exists == 'true'
-        run: echo "⚠️ Version already released. Skipping Docker build and release." && exit 0
+        run: echo "Version already released. Skipping Docker build and release."
 
       - name: Set up Docker Buildx
+        if: steps.check_tag.outputs.exists != 'true'
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to Docker Hub
+        if: steps.check_tag.outputs.exists != 'true'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Log in to GitHub Container Registry
+        if: steps.check_tag.outputs.exists != 'true'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -108,6 +117,7 @@ jobs:
           password: ${{ secrets.GH_PAT }}
 
       - name: Build and push Docker image
+        if: steps.check_tag.outputs.exists != 'true'
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -120,6 +130,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Create Git tag
+        if: steps.check_tag.outputs.exists != 'true'
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
@@ -127,6 +138,7 @@ jobs:
           git push origin "v${{ steps.version.outputs.version }}"
 
       - name: Create GitHub Release
+        if: steps.check_tag.outputs.exists != 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.version }}
