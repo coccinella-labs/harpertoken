@@ -6,7 +6,7 @@ def load_and_preprocess_data(tokenizer):
     # Load dataset based on env var
     dataset_name = os.getenv("FT_DATASET", "squad")
     if dataset_name == "squad":
-        dataset = load_dataset("squad")
+        dataset = load_dataset("rajpurkar/squad")
         dataset["train"] = dataset["train"].select(range(1000))
         dataset["validation"] = dataset["validation"].select(range(200))
     else:
