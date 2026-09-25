@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Coccinella-Labs/harpertoken/harpertoken/.github/assets/thumbnail.png" alt="harpertoken" width="100%">
+  <img src="https://raw.githubusercontent.com/coccinella-labs/harpertoken/main/.github/assets/thumbnail.png" alt="harpertoken" width="100%">
 </p>
 
 # Harpertoken ConvAI Fine-tuning

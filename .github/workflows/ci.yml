@@ -4,10 +4,10 @@ name: CI
 on:
   push:
     branches:
-      - harpertoken
+      - main
   pull_request:
     branches:
-      - harpertoken
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
