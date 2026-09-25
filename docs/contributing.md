@@ -5,7 +5,7 @@
 3. Make changes and test.
 4. Submit a pull request with conventional commit messages.
 
-For issues, open a [GitHub issue](https://github.com/bniladridas/path/issues) (adapt to your repo).
+For issues, open a [GitHub issue](https://github.com/coccinella-labs/path/issues) (adapt to your repo).
 
 ## Git Hooks and Conventional Commits
 

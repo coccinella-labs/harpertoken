@@ -27,7 +27,7 @@ This is a fine-tuned question answering model based on DistilBERT, optimized for
 
 ### Model Sources
 
-- **Repository:** https://github.com/bniladridas/harpertoken
+- **Repository:** https://github.com/coccinella-labs/harpertoken
 
 ## Uses
 

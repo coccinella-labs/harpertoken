@@ -255,7 +255,7 @@ Example: `feat: add conventional commit hook`
 3. Make changes and test.
 4. Submit a pull request with conventional commit messages.
 
-For issues, open a [GitHub issue](https://github.com/bniladridas/path/issues) (adapt to your repo).
+For issues, open a [GitHub issue](https://github.com/coccinella-labs/path/issues) (adapt to your repo).
 
 ## Frequently Asked Questions
 
