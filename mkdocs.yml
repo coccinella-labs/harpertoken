@@ -1,7 +1,7 @@
 ---
 site_name: Harpertoken ConvAI Fine-tuning
 site_description: Scripts to fine-tune the harpertokenConvAI model on SQuAD dataset
-site_author: bniladridas
+site_author: Coccinella Labs
 site_url: https://coccinella-labs.github.io/harpertoken
 
 repo_url: https://github.com/coccinella-labs/harpertoken
