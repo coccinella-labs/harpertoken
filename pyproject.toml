@@ -8,7 +8,7 @@ version = "0.1.0"
 dynamic = ["version"]
 description = "Fine-tuning script for Harpertoken ConvAI model on SQuAD"
 authors = [
-    {name = "Niladri Das", email = "niladri@example.com"},
+    {name = "Coccinella Labs", email = "maintainers@coccinella-labs.com"},
 ]
 dependencies = [
     "transformers",

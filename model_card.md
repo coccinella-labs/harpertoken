@@ -19,7 +19,7 @@ This model is a fine-tuned version of harpertoken/harpertokenConvAI, a DistilBER
 
 This is a fine-tuned question answering model based on DistilBERT, optimized for extractive QA tasks. It has been trained on a small subset of the SQuAD dataset to demonstrate fine-tuning capabilities in a CI environment.
 
-- **Developed by:** bniladridas
+- **Developed by:** Coccinella Labs
 - **Model type:** DistilBERT for Question Answering
 - **Language(s) (NLP):** English
 - **License:** MIT
@@ -27,7 +27,7 @@ This is a fine-tuned question answering model based on DistilBERT, optimized for
 
 ### Model Sources
 
-- **Repository:** https://github.com/bniladridas/harpertoken
+- **Repository:** https://github.com/coccinella-labs/harpertoken
 
 ## Uses
 
@@ -119,4 +119,4 @@ If you use this model, please cite the original DistilBERT and SQuAD papers.
 
 ## Model Card Contact
 
-bniladridas
+Coccinella Labs
