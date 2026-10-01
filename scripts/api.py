@@ -17,7 +17,7 @@ if os.path.exists(model_path):
     qa_pipeline = pipeline("question-answering", model=model_path, device=-1)
 else:
     qa_pipeline = pipeline(
-        "question-answering", model="harpertoken/harpertokenConvAI", device=-1
+        "question-answering", model="harpertoken/quiz", device=-1
     )
 
 

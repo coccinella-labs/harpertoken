@@ -38,7 +38,7 @@ This will:
 - Load and preprocess the dataset.
 - Fine-tune the model with specified params.
 - Evaluate on sample questions.
-- Optionally upload to `harpertoken/harpertokenConvAI-finetuned`.
+- Optionally upload to `harpertoken/clue`.
 
 ## Uploading to Hugging Face
 

@@ -17,7 +17,7 @@ else:
 print(f"Using device: {device}")
 
 # Load model and tokenizer
-model_name = "harpertoken/harpertokenConvAI"
+model_name = "harpertoken/quiz"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = DistilBertForQuestionAnswering.from_pretrained(model_name).to(device)
 
@@ -98,16 +98,16 @@ if upload:
             with open("model_card.md", "r") as f:
                 model_card = f.read()
         model.push_to_hub(
-            "harpertoken/harpertokenConvAI-finetuned",
+            "harpertoken/clue",
             token=hf_token,
             model_card=model_card,
         )
         tokenizer.push_to_hub(
-            "harpertoken/harpertokenConvAI-finetuned", token=hf_token
+            "harpertoken/clue", token=hf_token
         )  # noqa: E501
         print(
             "Model and tokenizer pushed to "
-            "harpertoken/harpertokenConvAI-finetuned"  # noqa: E501
+            "harpertoken/clue"  # noqa: E501
         )
     else:
         print("HF_TOKEN not set. Cannot upload to Hugging Face.")

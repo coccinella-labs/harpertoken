@@ -9,9 +9,9 @@ datasets:
 - squad
 ---
 
-# Model Card for harpertoken/harpertokenConvAI-finetuned
+# Model Card for harpertoken/clue
 
-This model is a fine-tuned version of harpertoken/harpertokenConvAI, a DistilBERT-based question answering model, trained on a subset of the SQuAD dataset.
+This model is a fine-tuned version of harpertoken/quiz, a DistilBERT-based question answering model, trained on a subset of the SQuAD dataset.
 
 ## Model Details
 
@@ -23,7 +23,7 @@ This is a fine-tuned question answering model based on DistilBERT, optimized for
 - **Model type:** DistilBERT for Question Answering
 - **Language(s) (NLP):** English
 - **License:** MIT
-- **Finetuned from model:** harpertoken/harpertokenConvAI
+- **Finetuned from model:** harpertoken/quiz
 
 ### Model Sources
 
@@ -56,7 +56,7 @@ Evaluate on your specific data and consider additional fine-tuning for productio
 ```python
 from transformers import pipeline
 
-qa = pipeline("question-answering", model="harpertoken/harpertokenConvAI-finetuned")
+qa = pipeline("question-answering", model="harpertoken/clue")
 result = qa(question="What is the capital of France?", context="France is a country in Europe. Paris is the capital.")
 print(result)
 ```

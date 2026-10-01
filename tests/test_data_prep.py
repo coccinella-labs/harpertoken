@@ -6,7 +6,7 @@ from scripts.data_prep import load_and_preprocess_data
 def test_load_and_preprocess_data():
     # Mock env
     os.environ["FT_DATASET"] = "squad"
-    tokenizer = AutoTokenizer.from_pretrained("harpertoken/harpertokenConvAI")
+    tokenizer = AutoTokenizer.from_pretrained("harpertoken/quiz")
     data = load_and_preprocess_data(tokenizer)
     assert "train" in data
     assert "validation" in data
