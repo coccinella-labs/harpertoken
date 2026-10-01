@@ -102,9 +102,7 @@ if upload:
             token=hf_token,
             model_card=model_card,
         )
-        tokenizer.push_to_hub(
-            "harpertoken/clue", token=hf_token
-        )  # noqa: E501
+        tokenizer.push_to_hub("harpertoken/clue", token=hf_token)  # noqa: E501
         print(
             "Model and tokenizer pushed to "
             "harpertoken/clue"  # noqa: E501

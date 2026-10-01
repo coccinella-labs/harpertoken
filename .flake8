@@ -1,0 +1,13 @@
+[flake8]
+# Line length is owned by black (88 columns). E203 is ignored because black
+# formats slices that way, and E501 is ignored for the same reason; flake8's
+# default 79-column limit otherwise contradicts black on any collapsed call,
+# which is exactly how the harpertoken/quiz rename broke CI.
+max-line-length = 88
+extend-ignore = E203, W503, E501
+exclude =
+    .git,
+    __pycache__,
+    build,
+    dist,
+    *.egg-info,

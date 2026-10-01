@@ -16,9 +16,7 @@ model_path = "./results/checkpoint-500"
 if os.path.exists(model_path):
     qa_pipeline = pipeline("question-answering", model=model_path, device=-1)
 else:
-    qa_pipeline = pipeline(
-        "question-answering", model="harpertoken/quiz", device=-1
-    )
+    qa_pipeline = pipeline("question-answering", model="harpertoken/quiz", device=-1)
 
 
 @app.post("/predict")
