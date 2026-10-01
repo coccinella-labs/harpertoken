@@ -1,9 +1,10 @@
-import torch
 from transformers import (
     AutoTokenizer,
     DistilBertForQuestionAnswering,
-    pipeline,
-)  # noqa: E501
+)
+
+import scripts.api
+from scripts.api import answer_span
 
 # Example questions with ground truth
 QUESTIONS = [
@@ -39,20 +40,17 @@ def compute_f1(pred, true):
 
 def main(model_path="./results"):
     # Load fine-tuned model and tokenizer from checkpoint
-    model = DistilBertForQuestionAnswering.from_pretrained(
-        model_path, local_files_only=True
-    )
     tokenizer = AutoTokenizer.from_pretrained(
         model_path, local_files_only=True, trust_remote_code=True
     )
 
-    # Create QA pipeline
-    qa_pipeline = pipeline(
-        "question-answering",
-        model=model,
-        tokenizer=tokenizer,
-        device=0 if torch.cuda.is_available() else -1,
+    # answer_span uses the model/tokenizer held in scripts.api, so point
+    # those at the checkpoint before decoding.
+    scripts.api.model = DistilBertForQuestionAnswering.from_pretrained(
+        model_path, local_files_only=True
     )
+    scripts.api.model.eval()
+    scripts.api.tokenizer = tokenizer
 
     # Compute metrics
     exact_matches = 0
@@ -60,8 +58,7 @@ def main(model_path="./results"):
 
     # Answer questions
     for q in QUESTIONS:
-        answer = qa_pipeline(question=q["question"], context=q["context"])
-        pred = answer["answer"]
+        pred, score = answer_span(q["question"], q["context"])
         true_answers = q["answers"]
         # Check exact match
         em = any(pred.strip().lower() == t.lower() for t in true_answers)
@@ -74,7 +71,7 @@ def main(model_path="./results"):
         print(f"Ground Truth: {true_answers}")
         print(f"Exact Match: {em}")
         print(f"F1 Score: {f1:.4f}")
-        print(f"Confidence: {answer['score']:.4f}")
+        print(f"Confidence: {score:.4f}")
         print("-" * 50)
 
     # Overall metrics

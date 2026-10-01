@@ -11,7 +11,7 @@ authors = [
     {name = "Coccinella Labs", email = "maintainers@coccinella-labs.com"},
 ]
 dependencies = [
-    "transformers>=4.57,<5",
+    "transformers>=4.57,<6",
     "torch",
     "datasets",
     "accelerate",
