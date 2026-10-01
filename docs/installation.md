@@ -1,15 +1,15 @@
 # Installation
 
-[![Python](https://img.shields.io/badge/Python-3.14+-blue.svg)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Version](https://img.shields.io/badge/Version-0.1.0-orange.svg)]()
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ## Setup
 
-1. **Clone or set up the project** (assuming local setup):
+1. **Clone the project**:
     ```sh
-    # Project is already in /Users/niladri/Desktop/model
-    cd /Users/niladri/Desktop/model
+    git clone https://github.com/coccinella-labs/harpertoken.git
+    cd harpertoken
     ```
 
 2. **Create Virtual Environment**:
@@ -31,7 +31,7 @@
 
 ## Requirements
 
-- Python >= 3.14
+- Python >= 3.10
 - PyTorch with MPS support (Mac M1)
 - 8GB RAM minimum
 - Supported runtimes: macOS with Apple Silicon

@@ -1,272 +1,178 @@
-# Harpertoken ConvAI Fine-tuning
+# Harpertoken ConvAI fine-tuning
 
-[![Python](https://img.shields.io/badge/Python-3.14+-blue.svg)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Version](https://img.shields.io/badge/Version-0.1.0-orange.svg)]()
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Docs](https://img.shields.io/badge/Docs-live-3ea6be.svg)](https://coccinella-labs.github.io/harpertoken/)
 
-This project provides scripts to fine-tune the [`quiz`](https://huggingface.co/harpertoken/quiz) model (a DistilBERT-based question answering model) on a subset of the SQuAD dataset, optimized for Mac M1 with 8GB RAM using MPS acceleration.
+Fine-tuning scripts for [`quiz`](https://huggingface.co/harpertoken/quiz), the extractive
+question answering model built on DistilBERT and trained on SQuAD. The target machine is
+an Apple Silicon Mac with 8 GB of RAM.
 
-The full API and scripts are organized for easy extension and customization.
-
-## Installation
-
-1. **Clone or set up the project** (assuming local setup):
-   ```sh
-   # Project is already in /Users/niladri/Desktop/model
-   cd /Users/niladri/Desktop/model
-   ```
-
-2. **Create Virtual Environment**:
-   ```sh
-   python3 -m venv venv
-   ```
-
-3. **Activate Virtual Environment**:
-   ```sh
-   source venv/bin/activate
-   ```
-
-4. **Install Dependencies**:
-   ```sh
-   pip install -r requirements.txt
-   # Optional: Install code quality tools
-   pip install black flake8 mypy
-   ```
-
-## Usage
-
-The builder script (`run.sh`) orchestrates the fine-tuning process with configurable options.
-
-### Basic Usage
-```sh
-./run.sh
-```
-
-### Interactive Configuration
-When you run `./run.sh`, it will prompt you for configuration options interactively:
-
-- **Dataset**: Choose the dataset (default: squad)
-- **Task**: Task type (default: qa)
-- **Tune**: Enable hyperparameter tuning with Optuna (y/n, default: n)
-- If tuning is disabled:
-  - **Epochs**: Number of training epochs (default: 1)
-  - **Batch**: Batch size (default: 2)
-  - **LR**: Learning rate (default: 2e-5)
-- **Upload**: Upload to Hugging Face after training (y/n, default: n)
-
-The script will then proceed with training and evaluation based on your inputs.
-
-### API Serving
-After training, serve the model via API:
-```sh
-pip install fastapi uvicorn
-python scripts/api.py  # Or uvicorn scripts.api:app --reload
-```
-
-API Endpoints:
-- `GET /`: API info
-- `POST /predict`: QA prediction (json: {"question": "...", "context": "..."})
-
-### Configuration File
-
-Use `config.yaml` for persistent settings:
-```yaml
-dataset: squad
-epochs: 2
-batch_size: 4
-learning_rate: 0.00005
-upload: true
-```
-
-The CLI loads from `config.yaml` and uses as prompt defaults.
-
-This will:
-- Load and preprocess the dataset.
-- Fine-tune the model with specified params.
-- Evaluate on sample questions.
-- Optionally upload to `harpertoken/clue`.
-
-### Uploading to Hugging Face
-
-Set `HF_TOKEN` env var for uploads:
-```sh
-export HF_TOKEN=your_token
-./run.sh --upload
-```
-
-Get token from [Hugging Face settings](https://huggingface.co/settings/tokens).
-
-### Manual Usage
-
-If you prefer to run scripts individually:
-
-1. **Train the Model**:
-   ```sh
-   python scripts/train.py
-   ```
-   Loads the model, preprocesses a small SQuAD subset, and fine-tunes for 1 epoch.
-
-2. **Evaluate the Model**:
-   ```sh
-   python scripts/evaluate.py
-   ```
-   Loads the fine-tuned model from `results/` and answers sample questions.
-
-### Request & Response Types
-
-The scripts use standard Hugging Face transformers types. For custom datasets, modify `scripts/data_prep.py` to return tokenized datasets with required fields (`input_ids`, `attention_mask`, `start_positions`, `end_positions`).
-
-## Handling Errors
-
-If training fails due to memory issues, reduce `per_device_train_batch_size` in `scripts/train.py`. For MPS errors, ensure PyTorch is installed with MPS support.
-
-Common errors:
-- `CUDA out of memory`: Reduce batch size.
-- `ModuleNotFoundError`: Ensure venv is activated and dependencies installed.
-
-## Advanced Usage
-
-### Customizing Training
-
-Edit `scripts/train.py` to adjust:
-- `num_train_epochs`: Increase for better performance (monitor RAM).
-- `learning_rate`: Tune for convergence.
-- Dataset: Modify `data_prep.py` to use custom QA datasets.
-
-### Logging
-
-Training logs are printed to console. For more verbose logging, set `logging_steps` lower in `TrainingArguments`.
-
-### Accessing Raw Outputs
-
-The evaluation script prints answers with confidence scores. To access raw model outputs, modify `scripts/evaluate.py` to return full predictions.
-
-### Custom Datasets
-
-To use a custom dataset:
-1. Update `load_and_preprocess_data` in `scripts/data_prep.py`.
-2. Ensure the dataset has `question`, `context`, and `answers` columns.
-
-## Project Structure
-
-- `scripts/`: Python scripts for data prep, training, and evaluation.
-- `data/`: Placeholder for custom datasets.
-- `models/`: Placeholder for saved models.
-- `results/`: Training outputs and checkpoints.
-- `__version__.py`: Version information.
-- `requirements.txt`: Dependencies.
-- `pyproject.toml`: Project configuration and tool settings.
-- `config.yaml`: Default configuration for builds.
-- `Dockerfile`: Docker container configuration.
-- `run.sh`: Orchestration script.
-- `scripts/`: Python scripts for fine-tuning.
-- `tests/`: Unit tests.
-- `.github/`: GitHub Actions workflows.
-- `venv/`: Virtual environment.
-
-## CI/CD
-
-This project uses GitHub Actions for continuous integration and Docker for containerization.
-
-- **Linting**: Flake8, Black, MyPy on every push/PR.
-- **Testing**: Pytest unit tests, syntax checks, and import tests.
-- **Docker Build**: Builds and pushes image to Docker Hub and GHCR on main branch.
-
-Workflow: `.github/workflows/ci.yml`
-
-## Docker
-
-Build and run the project in a container.
-
-### Build Locally
-```sh
-docker build -t harpertoken-convai-finetune .
-```
-
-### Run
-```sh
-docker run --rm harpertoken-convai-finetune
-```
-
-### Pull from Registry
-- Docker Hub: `docker pull <username>/harpertoken-convai-finetune`
-- GHCR: `docker pull ghcr.io/<username>/<repo>/harpertoken-convai-finetune`
-
-Dockerfile: `Dockerfile`
-
-## Testing
-
-Run tests locally:
-```sh
-pip install pytest
-pytest tests/
-```
-
-Tests include data preprocessing validation.
+The repository holds a data preparation step, a training loop, an evaluation script, and a
+FastAPI service that wraps the trained checkpoint. A shell script chains the first three
+together behind an interactive prompt.
 
 ## Requirements
 
-- Python >= 3.14
-- PyTorch with MPS support (Mac M1)
-- 8GB RAM minimum
-- Supported runtimes: macOS with Apple Silicon
+Python 3.10 or newer, PyTorch, and the dependencies listed in `requirements.txt`. MPS
+acceleration is used on Apple Silicon, CUDA on NVIDIA, and CPU otherwise. Expect to need
+roughly 8 GB of RAM at the default settings.
 
-## Git Hooks and Conventional Commits
+## Installation
 
-This project uses git hooks for code quality and conventional commit standards.
+```sh
+git clone https://github.com/coccinella-labs/harpertoken.git
+cd harpertoken
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
-### Setup
+`run.sh` sources `venv/bin/activate` on every run, so the environment has to exist at that
+path before you use it.
 
-1. **Enable Pre-commit Hook** (code quality):
-   ```sh
-   cp scripts/pre-commit .git/hooks/pre-commit
-   chmod +x .git/hooks/pre-commit
-   ```
+## Usage
 
-2. **Enable Commit Hook** (conventional commits):
-   ```sh
-   cp scripts/commit-msg .git/hooks/commit-msg
-   chmod +x .git/hooks/commit-msg
-   ```
+### The interactive script
 
-3. **Rewrite Existing Messages** (if needed):
-   ```sh
-   ./scripts/rewrite_msg.sh <commit-hash>  # For single commit
-   ./scripts/rewrite_msg.sh <start>..<end>  # For range
-   git push --force  # After rewriting
-   ```
+`./run.sh` asks for the dataset, the task, whether to tune hyperparameters, and, when
+tuning is off, the epoch count, batch size, learning rate, and whether to upload to the
+Hub. It accepts no command line flags. Defaults are 1 epoch, batch size 2, learning rate
+2e-5, no tuning and no upload, and they come from `config.yaml` through
+`scripts/load_config.py`.
 
-### Commit Message Format
+Because there are no flags, a non interactive run is expressed through the environment:
 
-- Start with type: `feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:`, `chore:`, `perf:`, `ci:`, `build:`, `revert:`
-- Description in lowercase
-- First line ≤40 characters
+```sh
+FT_EPOCHS=1 FT_BATCH_SIZE=1 FT_UPLOAD=false ./run.sh
+```
 
-Example: `feat: add conventional commit hook`
+### Training
+
+`scripts/train.py` fine tunes `harpertoken/quiz` on 1,000 SQuAD training examples and 200
+validation examples. The subset sizes are what keep the run inside 8 GB, and both are set
+in `scripts/data_prep.py:10`. Results, including the checkpoint used by the other
+scripts, are written to `results/`.
+
+```sh
+python scripts/train.py
+```
+
+### Evaluation
+
+`scripts/evaluate.py` reads the checkpoint from `results/`, answers two questions, and
+reports exact match and F1 against the expected answers:
+
+```sh
+python scripts/evaluate.py
+```
+
+Both scores come out at 1.0000. That is a two question smoke test that confirms the
+pipeline is wired up, and it is not a benchmark. Score against the SQuAD v1.1 dev set if
+you need a real number.
+
+### Serving
+
+`scripts/api.py` defines a FastAPI app, so it needs uvicorn to run. Executing the file
+directly does nothing.
+
+```sh
+uvicorn scripts.api:app --reload
+```
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /` | Service name and endpoint list |
+| `POST /predict` | Answer extraction from `{"question": ..., "context": ...}` |
+
+The service prefers `results/checkpoint-500` when that directory exists and otherwise
+falls back to `harpertoken/quiz`, so it responds before you have trained anything.
+
+Inference goes through `AutoModelForQuestionAnswering` because transformers 5 removed the
+`question-answering` pipeline task. Pinning below version 5 would only postpone the same
+break.
+
+### Uploading
+
+Set `HF_TOKEN` and either answer yes to the prompt or set the variable:
+
+```sh
+export HF_TOKEN=your_token          # https://huggingface.co/settings/tokens
+FT_UPLOAD=true ./run.sh
+```
+
+This pushes the checkpoint to `harpertoken/clue` and overwrites that repository's weights
+and model card. Change `scripts/train.py:101` if the output needs to go elsewhere.
+
+## Layout
+
+| Path | Contents |
+|---|---|
+| `scripts/data_prep.py` | SQuAD loading and tokenisation, and the subset sizes |
+| `scripts/train.py` | Fine tuning loop and Hub upload |
+| `scripts/evaluate.py` | Exact match and F1 against sample questions |
+| `scripts/api.py` | FastAPI service, and the span decoder it shares with evaluation |
+| `scripts/load_config.py` | Reads `config.yaml` into environment variables |
+| `tests/` | Pytest suite |
+| `run.sh` | Interactive orchestration of train then evaluate |
+| `config.yaml` | Default settings |
+| `Dockerfile` | Container image |
+
+`results/` is created by training and is git ignored.
+
+## Testing and CI
+
+```sh
+pip install pytest pytest-cov
+pytest tests/
+```
+
+`.github/workflows/ci.yml` runs pre commit on every push, then tests on Python 3.10 and
+3.11. The training step in CI runs with `FT_UPLOAD=true`, so every push to `main` retrains
+and reuploads `harpertoken/clue`. The Hub model is therefore not a stable artifact between
+runs.
+
+The release job builds a Docker image only when the version in `__version__.py` has no
+matching git tag, and creates the release tag itself.
+
+## Docker
+
+```sh
+docker build -t harpertoken-convai-finetune .
+docker run --rm harpertoken-convai-finetune
+```
+
+Images are published to Docker Hub and GitHub Container Registry as
+`harpertoken-convai-finetune`, tagged with the release version and with `latest`.
+
+## Troubleshooting
+
+**Out of memory.** Lower `per_device_train_batch_size` in `scripts/train.py`, or leave it
+at 1.
+
+**MPS errors.** Confirm the installed PyTorch build includes MPS support. CPU execution
+works but is slower, and `scripts/evaluate.py` selects the device on its own.
+
+**`FileNotFoundError` for `results/`.** Evaluation reads from `results/` and takes no
+arguments, so train first or edit the `model_path` default at the top of
+`scripts/evaluate.py`.
+
+**`ModuleNotFoundError`.** The virtual environment is not active, or
+`pip install -r requirements.txt` has not been run inside it.
 
 ## Contributing
 
-1. Fork the repo.
-2. Create a feature branch.
-3. Make changes and test.
-4. Submit a pull request with conventional commit messages.
+Fork, branch, test, and open a pull request. Commits follow
+[Conventional Commits](https://www.conventionalcommits.org/), enforced locally once the
+hooks are installed:
 
-For issues, open a [GitHub issue](https://github.com/coccinella-labs/harpertoken/issues).
+```sh
+cp scripts/pre-commit .git/hooks/pre-commit
+cp scripts/commit-msg .git/hooks/commit-msg
+chmod +x .git/hooks/pre-commit .git/hooks/commit-msg
+```
 
-## Frequently Asked Questions
+## License
 
-**Q: How to increase training data?**
-A: Edit `select(range(1000))` in `data_prep.py` to a larger range.
-
-**Q: Can this run on other hardware?**
-A: Yes, modify device to 'cuda' for GPU or 'cpu' for CPU-only.
-
-**Q: What if I want to deploy the model?**
-A: Use Hugging Face's model upload after training.
-
-## Semantic Versioning
-
-This project follows SemVer for releases. Backwards-incompatible changes will be in major versions.
-
-We appreciate feedback; open an issue for suggestions.
+MIT. See [LICENSE](../LICENSE).
