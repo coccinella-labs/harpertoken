@@ -5,7 +5,6 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "harpertoken-convai-finetune"
 version = "0.1.0"
-dynamic = ["version"]
 description = "Fine-tuning script for Harpertoken ConvAI model on SQuAD"
 authors = [
     {name = "Coccinella Labs", email = "maintainers@coccinella-labs.com"},
@@ -17,11 +16,20 @@ dependencies = [
     "accelerate",
     "pydantic",
 ]
-requires-python = ">=3.14"
+# CI tests 3.10 and 3.11, and every module imports cleanly on both; 3.14 was
+# only ever asserted here, which made `pip install .` fail on the versions the
+# project actually supports.
+requires-python = ">=3.10"
+
+[tool.setuptools]
+# Without an explicit package list, setuptools produced an empty wheel: the
+# repository root has no top-level package or module matching the project name,
+# so nothing was collected and `pip install .` yielded no importable code.
+packages = ["scripts"]
 
 [tool.black]
 line-length = 88
-target-version = ['py314']
+target-version = ['py310']
 include = '\.pyi?$'
 extend-exclude = '''
 /(
@@ -49,7 +57,7 @@ exclude = [
 ]
 
 [tool.mypy]
-python_version = "3.14"
+python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
