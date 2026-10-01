@@ -22,16 +22,26 @@ Training used a learning rate of 2e-5 at batch size one for a single epoch, in f
 
 ## Usage
 
-```python
-from transformers import pipeline
+Transformers 5 removed the `question-answering` pipeline, so load the model directly:
 
-qa = pipeline("question-answering", model="harpertoken/clue")
-answer = qa(
-    question="What is the capital of France?",
-    context="France is a country in Europe. Paris is its capital.",
-)
-print(answer["answer"], answer["score"])
+```python
+import torch
+from transformers import AutoModelForQuestionAnswering, AutoTokenizer
+
+tok = AutoTokenizer.from_pretrained("harpertoken/clue")
+model = AutoModelForQuestionAnswering.from_pretrained("harpertoken/clue")
+
+question = "Who wrote Hamlet?"
+context = "Hamlet is a tragedy written by William Shakespeare around 1600."
+inputs = tok(question, context, return_tensors="pt", truncation=True, max_length=512)
+
+with torch.inference_mode():
+    out = model(**inputs)
+start, end = int(out.start_logits.argmax()), int(out.end_logits.argmax())
+print(tok.decode(inputs.input_ids[0][start : end + 1]))
 ```
+
+On the three questions used to check `quiz` — the capital of France, the author of Hamlet, and the year the Eiffel Tower was completed — this checkpoint returns `paris`, `william shakespeare` and `1889`, the same answers. A thousand examples has not visibly degraded it, which is itself a reason to doubt that the fine-tuning taught much.
 
 ## Limitations
 
