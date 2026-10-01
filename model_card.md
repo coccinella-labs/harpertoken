@@ -2,7 +2,7 @@
 license: mit
 language: en
 library_name: transformers
-pipeline_tag: question-answering
+pipeline_tag: feature-extraction
 base_model: distilbert-base-uncased
 datasets:
 - squad
