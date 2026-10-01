@@ -18,7 +18,7 @@ tags:
 
 A short continued-fine-tuning run of [`quiz`](/quiz), itself a DistilBERT encoder adapted for extractive question answering on SQuAD. The architecture and tokenizer are identical; only the weights differ. Where `quiz` reflects a full training pass, this checkpoint reflects roughly a thousand SQuAD examples seen once, which makes it a useful small-scale reference point and a poor substitute for a properly trained model.
 
-Training used a learning rate of 2e-5 at batch size one for a single epoch, in float32. The published weights are `model.safetensors` only. Note that the accompanying `config.json` contains a key `tie_weights_`, which no version of Transformers reads; the value that matters, untying the embedding weights, is already reflected in the checkpoint, so the key is inert and can be deleted.
+Training used a learning rate of 2e-5 at batch size one for a single epoch, in float32. The published weights are `model.safetensors`. The `config.json` previously carried a key `tie_weights_`, which no version of Transformers reads; it has been removed, and nothing else in the config was altered.
 
 ## Usage
 
