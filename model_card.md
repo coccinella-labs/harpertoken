@@ -1,122 +1,42 @@
 ---
+license: mit
+language: en
 library_name: transformers
-tags:
-- question-answering
-- distilbert
-- squad
-- fine-tuned
+pipeline_tag: question-answering
+base_model: distilbert-base-uncased
 datasets:
 - squad
+tags:
+- distilbert
+- extractive-qa
+- question-answering
+- squad
+- fine-tuned
 ---
 
-# Model Card for harpertoken/clue
+# clue
 
-This model is a fine-tuned version of harpertoken/quiz, a DistilBERT-based question answering model, trained on a subset of the SQuAD dataset.
+A short continued-fine-tuning run of [`quiz`](/quiz), itself a DistilBERT encoder adapted for extractive question answering on SQuAD. The architecture and tokenizer are identical; only the weights differ. Where `quiz` reflects a full training pass, this checkpoint reflects roughly a thousand SQuAD examples seen once, which makes it a useful small-scale reference point and a poor substitute for a properly trained model.
 
-## Model Details
+Training used a learning rate of 2e-5 at batch size one for a single epoch, in float32. The published weights are `model.safetensors` only. Note that the accompanying `config.json` contains a key `tie_weights_`, which no version of Transformers reads; the value that matters, untying the embedding weights, is already reflected in the checkpoint, so the key is inert and can be deleted.
 
-### Model Description
-
-This is a fine-tuned question answering model based on DistilBERT, optimized for extractive QA tasks. It has been trained on a small subset of the SQuAD dataset to demonstrate fine-tuning capabilities in a CI environment.
-
-- **Developed by:** Coccinella Labs
-- **Model type:** DistilBERT for Question Answering
-- **Language(s) (NLP):** English
-- **License:** MIT
-- **Finetuned from model:** harpertoken/quiz
-
-### Model Sources
-
-- **Repository:** https://github.com/coccinella-labs/harpertoken
-
-## Uses
-
-### Direct Use
-
-This model can be used directly for question answering on passages similar to SQuAD. Provide a question and context, and it will predict the answer span.
-
-### Downstream Use
-
-Can be further fine-tuned on domain-specific data for improved performance.
-
-### Out-of-Scope Use
-
-Not suitable for non-English text, generative tasks, or domains outside of factual QA.
-
-## Bias, Risks, and Limitations
-
-Trained on a limited SQuAD subset, may exhibit biases from the dataset. Performance may degrade on out-of-domain questions.
-
-### Recommendations
-
-Evaluate on your specific data and consider additional fine-tuning for production use.
-
-## How to Get Started with the Model
+## Usage
 
 ```python
 from transformers import pipeline
 
 qa = pipeline("question-answering", model="harpertoken/clue")
-result = qa(question="What is the capital of France?", context="France is a country in Europe. Paris is the capital.")
-print(result)
+answer = qa(
+    question="What is the capital of France?",
+    context="France is a country in Europe. Paris is its capital.",
+)
+print(answer["answer"], answer["score"])
 ```
 
-## Training Details
+## Limitations
 
-### Training Data
+A thousand examples is a demonstration of the fine-tuning mechanics rather than a trained model, and the documentation this replaced claimed SQuAD exact-match and F1 figures that were never produced by an evaluation. Treat this as a low-fidelity copy of `quiz`. It is English-only, inherits the same uncased tokenisation and SQuAD domain bias described in the `quiz` card, and shares its 512-token limit. Compare the two directly before assuming the fine-tuning helped.
 
-Subset of SQuAD 1.1 dataset (approximately 1000 examples).
+## Attribution
 
-### Training Procedure
-
-#### Training Hyperparameters
-
-- **Training regime:** fp32
-- **Epochs:** 1
-- **Batch size:** 1
-- **Learning rate:** 2e-5
-
-#### Speeds, Sizes, Times
-
-Trained in CI environment, minimal time due to small dataset.
-
-## Evaluation
-
-### Testing Data, Factors & Metrics
-
-#### Testing Data
-
-SQuAD validation set subset.
-
-#### Metrics
-
-F1 score, Exact Match.
-
-### Results
-
-Basic evaluation on sample questions.
-
-## Environmental Impact
-
-Minimal impact due to small-scale training in CI.
-
-- **Hardware Type:** GitHub Actions runners
-- **Carbon Emitted:** Negligible
-
-## Technical Specifications
-
-### Model Architecture and Objective
-
-DistilBERT encoder with QA head for span prediction.
-
-### Compute Infrastructure
-
-GitHub Actions Ubuntu runners.
-
-## Citation
-
-If you use this model, please cite the original DistilBERT and SQuAD papers.
-
-## Model Card Contact
-
-Coccinella Labs
+DistilBERT follows Sanh et al. (2019); SQuAD follows Rajpurkar et al. (2016).

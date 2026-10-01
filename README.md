@@ -9,7 +9,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Docs](https://img.shields.io/badge/Docs-live-3ea6be.svg)](https://coccinella-labs.github.io/harpertoken/)
 
-This project provides scripts to fine-tune the `harpertokenConvAI` model (a DistilBERT-based question answering model) on a subset of the SQuAD dataset, optimized for Mac M1 with 8GB RAM using MPS acceleration.
+This project provides scripts to fine-tune the [`quiz`](https://huggingface.co/harpertoken/quiz) model (a DistilBERT-based question answering model) on a subset of the SQuAD dataset, optimized for Mac M1 with 8GB RAM using MPS acceleration.
 
 The full API and scripts are organized for easy extension and customization.
 
