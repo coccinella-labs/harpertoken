@@ -723,8 +723,8 @@ pytest<span class="w"> </span>tests/
 <li><strong>Linting</strong>: Flake8 and Black on every push/PR, via pre-commit.</li>
 <li><strong>Testing</strong>: Pytest unit tests, syntax checks, import tests, and post-training validation.</li>
 <li><strong>Training</strong>: Fine-tunes the model on a SQuAD subset with configurable epochs/batch/LR.</li>
-<li><strong>Hugging Face Upload</strong>: Pushes fine-tuned model and tokenizer to HF Hub with model card (requires <code>HF_TOKEN</code> secret).</li>
-<li><strong>Docker Build</strong>: Builds and pushes image to Docker Hub and GHCR on main branch.</li>
+<li><strong>Hugging Face Upload</strong>: Only on releases. The <code>publish-model</code> job trains and pushes to <code>harpertoken/clue</code> when the version has no git tag yet. Every push also re-uploads <code>model_card.md</code> via the <code>sync-card</code> job, and <code>ci-test</code> exercises <code>push_to_hub</code> against a scratch branch that is deleted afterward.</li>
+<li><strong>Docker Build</strong>: Builds and pushes image to Docker Hub and GHCR when the version has no git tag yet, same gate as the model publish.</li>
 </ul>
 <p>Workflows: <code>.github/workflows/ci.yml</code> (CI/training), <code>.github/workflows/docs.yml</code> (MkDocs deployment to GitHub Pages on main branch)</p>
 <h2 id="docker">Docker<a class="headerlink" href="#docker" title="Permanent link">&para;</a></h2>
