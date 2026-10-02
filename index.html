@@ -726,10 +726,12 @@ path before you use it.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <h3 id="the-interactive-script">The interactive script<a class="headerlink" href="#the-interactive-script" title="Permanent link">&para;</a></h3>
 <p><code>./run.sh</code> asks for the dataset, the task, whether to tune hyperparameters, and, when
-tuning is off, the epoch count, batch size, learning rate, and whether to upload to the
-Hub. It accepts no command line flags. Defaults are 1 epoch, batch size 2, learning rate
+tuning is off, the epoch count, batch size, learning rate, whether to upload to the
+Hub, and where to upload. It accepts no command line flags. Defaults are 1 epoch, batch size 2, learning rate
 2e-5, no tuning and no upload, and they come from <code>config.yaml</code> through
-<code>scripts/load_config.py</code>.</p>
+<code>scripts/load_config.py</code>. The upload target defaults to <code>harpertoken/clue</code> on a
+<code>ci-smoke</code> scratch branch rather than <code>main</code>, matching the CI smoke test, so a local
+run cannot overwrite the published weights by accepting defaults.</p>
 <p>Because there are no flags, a non interactive run is expressed through the environment:</p>
 <div class="highlight"><pre><span></span><code><span class="nv">FT_EPOCHS</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">FT_BATCH_SIZE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">FT_UPLOAD</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>./run.sh
 </code></pre></div>
