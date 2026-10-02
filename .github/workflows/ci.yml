@@ -55,12 +55,16 @@ jobs:
           python -c "from scripts.data_prep import load_and_preprocess_data; print('Import ok')"
           python -c "import scripts.train; print('Train import ok')"
           python -c "import scripts.evaluate; print('Evaluate import ok')"
+      # Exercise the push_to_hub path on one leg only, against a scratch repo.
+      # Two matrix legs writing harpertoken/clue concurrently raced each other,
+      # and a plain push should never replace a published model.
       - env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           FT_EPOCHS: 1
           FT_BATCH_SIZE: 1
           FT_LR: 2e-5
-          FT_UPLOAD: true
+          FT_UPLOAD: ${{ matrix.python-version == '3.11' }}
+          FT_REPO_ID: harpertoken/clue-ci
           PYTHONPATH: .
         run: python scripts/train.py
       - run: python scripts/evaluate.py
@@ -149,3 +153,60 @@ jobs:
             - Model uploaded to Hugging Face Hub
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+
+   publish-model:
+    # Publishing is a release decision, not a side effect of every push. The
+    # gate mirrors release-build: this push releases the version when no v tag
+    # exists for it yet. Note release-build creates that tag with GITHUB_TOKEN,
+    # which does not trigger workflow runs, so gating on a tag push would never
+    # fire.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: [lint, ci-test]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Needed so the tag lookup below sees existing tags.
+          fetch-depth: 0
+
+      - name: Extract version
+        id: version
+        run: |
+          echo "version=$(grep -oP '(?<=__version__ = \")[^\"]+' __version__.py)" >> $GITHUB_OUTPUT
+
+      - name: Check if version tag exists
+        id: check_tag
+        run: |
+          if git rev-parse "v${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Report if version already released
+        if: steps.check_tag.outputs.exists == 'true'
+        run: echo "Version already released. Skipping model publish."
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-3.11-${{ hashFiles('**/requirements.txt') }}
+      - run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt huggingface_hub
+      - name: Train and publish model
+        if: steps.check_tag.outputs.exists != 'true'
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          FT_EPOCHS: 1
+          FT_BATCH_SIZE: 1
+          FT_LR: 2e-5
+          FT_UPLOAD: 'true'
+          FT_REPO_ID: harpertoken/clue
+          PYTHONPATH: .
+        run: |
+          python scripts/train.py
+          python scripts/evaluate.py
