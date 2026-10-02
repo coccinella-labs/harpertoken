@@ -3,8 +3,12 @@
 After training, serve the model via API:
 ```sh
 pip install fastapi uvicorn
-python scripts/api.py  # Or uvicorn scripts.api:app --reload
+uvicorn scripts.api:app --reload
 ```
+
+`scripts/api.py` only defines the FastAPI app. Running it directly with `python`
+does nothing, because the module has no `__main__` block and never calls
+`uvicorn.run`, so the process imports and exits immediately.
 
 ## API Endpoints
 

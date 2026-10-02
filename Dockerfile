@@ -1,8 +1,14 @@
-# Use Python 3.14 slim image
-FROM python:3.14-slim
+# Match the versions CI tests on; 3.14-slim also satisfies requires-python but
+# was untested here.
+FROM python:3.11-slim
 
 # Set working directory
 WORKDIR /app
+
+# scripts/train.py imports scripts.data_prep, which needs the repository root on
+# the path. Without this the container fails at startup with
+# ModuleNotFoundError: No module named 'scripts'.
+ENV PYTHONPATH=/app
 
 # Install system dependencies for PyTorch
 RUN apt-get update && apt-get install -y \
