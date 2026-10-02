@@ -14,6 +14,9 @@ tags:
 - fine-tuned
 ---
 
+<!-- SOURCE OF TRUTH: this file. Do not edit harpertoken/clue's card on the Hub
+     directly; the sync-card CI job overwrites it from here on every push to main. -->
+
 # clue
 
 A short continued-fine-tuning run of [`quiz`](https://huggingface.co/harpertoken/quiz), itself a DistilBERT encoder adapted for extractive question answering on SQuAD. The architecture and tokenizer are identical; only the weights differ. Where `quiz` reflects a full training pass, this checkpoint reflects roughly a thousand SQuAD examples seen once, which makes it a useful small-scale reference point and a poor substitute for a properly trained model.
