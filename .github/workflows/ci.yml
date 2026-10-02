@@ -131,7 +131,7 @@ jobs:
       - name: Extract version
         id: version
         run: |
-          echo "version=$(grep -oP '(?<=__version__ = \")[^\"]+' __version__.py)" >> $GITHUB_OUTPUT
+          echo "version=$(grep -oP '(?<=^version = \")[^\"]+' pyproject.toml | head -1)" >> $GITHUB_OUTPUT
 
       - name: Check if version tag exists
         id: check_tag
@@ -145,6 +145,20 @@ jobs:
       - name: Report if version already released
         if: steps.check_tag.outputs.exists == 'true'
         run: echo "Version already released. Skipping Docker build and release."
+
+      - name: Create Git tag
+        # Before Docker, not after: if the Docker steps fail on missing secrets,
+        # the tag still exists, so the gate closes and later pushes do not retry
+        # the whole release, re-running publish-model and overwriting clue each
+        # time. A tag without an image is honest; a loop that clobbers the Hub
+        # model on every push is not. A failed Docker step also skips the release
+        # note below by default, so no false claim is published.
+        if: steps.check_tag.outputs.exists != 'true'
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git tag -a "v${{ steps.version.outputs.version }}" -m "Release v${{ steps.version.outputs.version }}"
+          git push origin "v${{ steps.version.outputs.version }}"
 
       - name: Set up Docker Buildx
         if: steps.check_tag.outputs.exists != 'true'
@@ -178,14 +192,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Create Git tag
-        if: steps.check_tag.outputs.exists != 'true'
-        run: |
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git tag -a "v${{ steps.version.outputs.version }}" -m "Release v${{ steps.version.outputs.version }}"
-          git push origin "v${{ steps.version.outputs.version }}"
-
       - name: Create GitHub Release
         if: steps.check_tag.outputs.exists != 'true'
         uses: softprops/action-gh-release@v2
@@ -217,7 +223,7 @@ jobs:
       - name: Extract version
         id: version
         run: |
-          echo "version=$(grep -oP '(?<=__version__ = \")[^\"]+' __version__.py)" >> $GITHUB_OUTPUT
+          echo "version=$(grep -oP '(?<=^version = \")[^\"]+' pyproject.toml | head -1)" >> $GITHUB_OUTPUT
 
       - name: Check if version tag exists
         id: check_tag

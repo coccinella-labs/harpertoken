@@ -9,7 +9,7 @@ python3 -c "import yaml, transformers, torch" 2>/dev/null || pip install -r requ
 # Load version and config. load_config.py must be eval'd rather than just run:
 # environment variables set inside that Python process die with it, so a bare
 # call leaves config.yaml silently inert.
-VERSION=$(python3 -c "from __version__ import __version__; print(__version__)")
+VERSION=$(python3 -c "import re; print(re.search(r'(?<=^version = \")[^\"]+', open('pyproject.toml').read(), re.M).group(0))")
 eval "$(python3 scripts/load_config.py --export)"
 
 # Header
