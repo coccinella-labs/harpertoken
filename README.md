@@ -1,7 +1,7 @@
 > **Archived.** This branch preserves the repository as it stood before the `main` rewrite. Names, paths, and badges below are stale by design; see [`main`](https://github.com/coccinella-labs/harpertoken) for the current version.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/coccinella-labs/harpertoken/master/.github/assets/thumbnail.png" alt="harpertoken" width="100%">
+  <img src="https://raw.githubusercontent.com/coccinella-labs/harpertoken/main/.github/assets/thumbnail.png" alt="harpertoken" width="100%">
 </p>
 
 # Harpertoken ConvAI Fine-tuning
@@ -66,7 +66,7 @@ The script will then proceed with training and evaluation based on your inputs.
 After training, serve the model via API:
 ```sh
 pip install fastapi uvicorn
-python scripts/api.py  # Or uvicorn scripts.api:app --reload
+uvicorn scripts.api:app --reload
 ```
 
 API Endpoints:
@@ -78,10 +78,10 @@ API Endpoints:
 Use `config.yaml` for persistent settings:
 ```yaml
 dataset: squad
-epochs: 2
-batch_size: 4
-learning_rate: 0.00005
-upload: true
+epochs: 1
+batch_size: 2
+learning_rate: 0.00002
+upload: false
 ```
 
 The CLI loads from `config.yaml` and uses as prompt defaults.
@@ -97,7 +97,7 @@ This will:
 Set `HF_TOKEN` env var for uploads:
 ```sh
 export HF_TOKEN=your_token
-./run.sh --upload
+FT_UPLOAD=true ./run.sh
 ```
 
 Get token from [Hugging Face settings](https://huggingface.co/settings/tokens).
