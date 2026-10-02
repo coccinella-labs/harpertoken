@@ -712,9 +712,10 @@
 - Evaluate on sample questions.
 - Optionally upload to <code>harpertoken/clue</code>.</p>
 <h2 id="uploading-to-hugging-face">Uploading to Hugging Face<a class="headerlink" href="#uploading-to-hugging-face" title="Permanent link">&para;</a></h2>
-<p>Set <code>HF_TOKEN</code> env var for uploads:
+<p>Set <code>HF_TOKEN</code> env var for uploads, then answer yes at the upload prompt
+(<code>FT_UPLOAD=true</code> answers it non-interactively):
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span>your_token
-./run.sh<span class="w"> </span>--upload
+<span class="nv">FT_UPLOAD</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>./run.sh
 </code></pre></div></p>
 <p>Get token from <a href="https://huggingface.co/settings/tokens">Hugging Face settings</a>.</p>
 <h2 id="manual-usage">Manual Usage<a class="headerlink" href="#manual-usage" title="Permanent link">&para;</a></h2>
