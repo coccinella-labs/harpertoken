@@ -55,18 +55,29 @@ jobs:
           python -c "from scripts.data_prep import load_and_preprocess_data; print('Import ok')"
           python -c "import scripts.train; print('Train import ok')"
           python -c "import scripts.evaluate; print('Evaluate import ok')"
-      # Exercise the push_to_hub path on one leg only, against a scratch repo.
-      # Two matrix legs writing harpertoken/clue concurrently raced each other,
-      # and a plain push should never replace a published model.
+      # Exercise the push_to_hub path on one leg only. Two matrix legs writing
+      # harpertoken/clue concurrently raced each other, and a plain push should
+      # never replace a published model, so this writes to a scratch branch that
+      # the step below removes.
       - env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           FT_EPOCHS: 1
           FT_BATCH_SIZE: 1
           FT_LR: 2e-5
           FT_UPLOAD: ${{ matrix.python-version == '3.11' }}
-          FT_REPO_ID: harpertoken/clue-ci
+          FT_REPO_ID: harpertoken/clue
+          FT_REVISION: ci-smoke
           PYTHONPATH: .
         run: python scripts/train.py
+
+      - name: Remove the smoke-test branch
+        if: always() && matrix.python-version == '3.11'
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          curl -s -o /dev/null -w "branch delete HTTP %{http_code}\n" -X DELETE \
+            -H "Authorization: Bearer $HF_TOKEN" \
+            https://huggingface.co/api/models/harpertoken/clue/branch/ci-smoke
       # evaluate.py imports scripts.api for the span decoder, so the repo root
       # has to be importable here as it is for the training step.
       - run: PYTHONPATH=. python scripts/evaluate.py

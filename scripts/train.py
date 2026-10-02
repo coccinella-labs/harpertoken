@@ -94,13 +94,14 @@ upload = os.getenv("FT_UPLOAD", "false").lower() == "true"
 if upload:
     hf_token = os.getenv("HF_TOKEN")
     repo_id = os.getenv("FT_REPO_ID", "harpertoken/clue")
+    revision = os.getenv("FT_REVISION") or None
     if hf_token:
         model_card = None
         if os.path.exists("model_card.md"):
             with open("model_card.md", "r") as f:
                 model_card = f.read()
-        model.push_to_hub(repo_id, token=hf_token)
-        tokenizer.push_to_hub(repo_id, token=hf_token)  # noqa: E501
+        model.push_to_hub(repo_id, token=hf_token, revision=revision)
+        tokenizer.push_to_hub(repo_id, token=hf_token, revision=revision)  # noqa: E501
         if model_card:
             # push_to_hub generates its own card and, before Transformers 5,
             # silently absorbed a `model_card` argument through **deprecated_kwargs.
@@ -111,11 +112,13 @@ if upload:
                 path_or_fileobj=model_card.encode(),
                 path_in_repo="README.md",
                 repo_id=repo_id,
+                revision=revision,
                 repo_type="model",
             )
         print(
             "Model and tokenizer pushed to "
-            f"{repo_id}"  # noqa: E501
+            f"{repo_id}"
+            f"{' at ' + revision if revision else ''}"  # noqa: E501
         )
     else:
         print("HF_TOKEN not set. Cannot upload to Hugging Face.")
