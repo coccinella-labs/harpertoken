@@ -566,8 +566,11 @@
 <h1 id="api-serving">API Serving<a class="headerlink" href="#api-serving" title="Permanent link">&para;</a></h1>
 <p>After training, serve the model via API:
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>fastapi<span class="w"> </span>uvicorn
-python<span class="w"> </span>scripts/api.py<span class="w">  </span><span class="c1"># Or uvicorn scripts.api:app --reload</span>
+uvicorn<span class="w"> </span>scripts.api:app<span class="w"> </span>--reload
 </code></pre></div></p>
+<p><code>scripts/api.py</code> only defines the FastAPI app. Running it directly with <code>python</code>
+does nothing, because the module has no <code>__main__</code> block and never calls
+<code>uvicorn.run</code>, so the process imports and exits immediately.</p>
 <h2 id="api-endpoints">API Endpoints<a class="headerlink" href="#api-endpoints" title="Permanent link">&para;</a></h2>
 <ul>
 <li><code>GET /</code>: API info</li>
