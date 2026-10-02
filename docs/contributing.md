@@ -57,8 +57,8 @@ This project uses GitHub Actions for continuous integration, model training, and
 - **Linting**: Flake8 and Black on every push/PR, via pre-commit.
 - **Testing**: Pytest unit tests, syntax checks, import tests, and post-training validation.
 - **Training**: Fine-tunes the model on a SQuAD subset with configurable epochs/batch/LR.
-- **Hugging Face Upload**: Pushes fine-tuned model and tokenizer to HF Hub with model card (requires `HF_TOKEN` secret).
-- **Docker Build**: Builds and pushes image to Docker Hub and GHCR on main branch.
+- **Hugging Face Upload**: Only on releases. The `publish-model` job trains and pushes to `harpertoken/clue` when the version has no git tag yet. Every push also re-uploads `model_card.md` via the `sync-card` job, and `ci-test` exercises `push_to_hub` against a scratch branch that is deleted afterward.
+- **Docker Build**: Builds and pushes image to Docker Hub and GHCR when the version has no git tag yet, same gate as the model publish.
 
 Workflows: `.github/workflows/ci.yml` (CI/training), `.github/workflows/docs.yml` (MkDocs deployment to GitHub Pages on main branch)
 
