@@ -6,9 +6,11 @@ source venv/bin/activate
 # Install deps if needed
 python3 -c "import yaml, transformers, torch" 2>/dev/null || pip install -r requirements.txt
 
-# Load version and config
+# Load version and config. load_config.py must be eval'd rather than just run:
+# environment variables set inside that Python process die with it, so a bare
+# call leaves config.yaml silently inert.
 VERSION=$(python3 -c "from __version__ import __version__; print(__version__)")
-python3 scripts/load_config.py
+eval "$(python3 scripts/load_config.py --export)"
 
 # Header
 echo "Harpertoken CLI v$VERSION"

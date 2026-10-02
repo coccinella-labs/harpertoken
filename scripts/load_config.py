@@ -1,4 +1,6 @@
 import os
+import shlex
+import sys
 import yaml
 
 # Load config from config.yaml if exists
@@ -21,4 +23,21 @@ hf_token = config.get("hf_token", "")
 if hf_token:
     os.environ["HF_TOKEN"] = hf_token
 
-print("Config loaded.")
+if "--export" in sys.argv:
+    # Print shell assignments for run.sh to eval. Setting os.environ above only
+    # affects this process, so a bare `python3 scripts/load_config.py` call never
+    # reached the caller and config.yaml was silently inert.
+    for key in (
+        "FT_DATASET",
+        "FT_TASK",
+        "FT_EPOCHS",
+        "FT_BATCH_SIZE",
+        "FT_LR",
+        "FT_UPLOAD",
+        "FT_TUNE",
+        "HF_TOKEN",
+    ):
+        if key in os.environ:
+            print(f"export {key}={shlex.quote(os.environ[key])}")
+else:
+    print("Config loaded.")
