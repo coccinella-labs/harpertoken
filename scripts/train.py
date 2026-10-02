@@ -1,5 +1,6 @@
 import os
 import torch
+from huggingface_hub import HfApi
 from transformers import (
     AutoTokenizer,
     DistilBertForQuestionAnswering,
@@ -97,12 +98,20 @@ if upload:
         if os.path.exists("model_card.md"):
             with open("model_card.md", "r") as f:
                 model_card = f.read()
-        model.push_to_hub(
-            "harpertoken/clue",
-            token=hf_token,
-            model_card=model_card,
-        )
+        model.push_to_hub("harpertoken/clue", token=hf_token)
         tokenizer.push_to_hub("harpertoken/clue", token=hf_token)  # noqa: E501
+        if model_card:
+            # push_to_hub generates its own card and, before Transformers 5,
+            # silently absorbed a `model_card` argument through **deprecated_kwargs.
+            # Transformers 5 rejects it, so upload ours separately. It has to be
+            # after the pushes, or those overwrite the README.
+            api = HfApi(token=hf_token)
+            api.upload_file(
+                path_or_fileobj=model_card.encode(),
+                path_in_repo="README.md",
+                repo_id="harpertoken/clue",
+                repo_type="model",
+            )
         print(
             "Model and tokenizer pushed to "
             "harpertoken/clue"  # noqa: E501
