@@ -15,6 +15,9 @@ dependencies = [
     "datasets",
     "accelerate",
     "pydantic",
+    # scripts/api.py is part of the installed package and imports both.
+    "fastapi",
+    "uvicorn",
 ]
 # CI tests 3.10 and 3.11, and every module imports cleanly on both; 3.14 was
 # only ever asserted here, which made `pip install .` fail on the versions the

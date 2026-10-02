@@ -67,7 +67,9 @@ jobs:
           FT_REPO_ID: harpertoken/clue-ci
           PYTHONPATH: .
         run: python scripts/train.py
-      - run: python scripts/evaluate.py
+      # evaluate.py imports scripts.api for the span decoder, so the repo root
+      # has to be importable here as it is for the training step.
+      - run: PYTHONPATH=. python scripts/evaluate.py
       - run: echo "✅ Tests, imports, and training passed on Python ${{ matrix.python-version }}" >> $GITHUB_STEP_SUMMARY
 
    release-build:
