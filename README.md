@@ -36,10 +36,12 @@ path before you use it.
 ### The interactive script
 
 `./run.sh` asks for the dataset, the task, whether to tune hyperparameters, and, when
-tuning is off, the epoch count, batch size, learning rate, and whether to upload to the
-Hub. It accepts no command line flags. Defaults are 1 epoch, batch size 2, learning rate
+tuning is off, the epoch count, batch size, learning rate, whether to upload to the
+Hub, and where to upload. It accepts no command line flags. Defaults are 1 epoch, batch size 2, learning rate
 2e-5, no tuning and no upload, and they come from `config.yaml` through
-`scripts/load_config.py`.
+`scripts/load_config.py`. The upload target defaults to `harpertoken/clue` on a
+`ci-smoke` scratch branch rather than `main`, matching the CI smoke test, so a local
+run cannot overwrite the published weights by accepting defaults.
 
 Because there are no flags, a non interactive run is expressed through the environment:
 
