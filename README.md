@@ -1,3 +1,5 @@
+> **Archived.** This branch preserves the repository as it stood before the `main` rewrite. Names, paths, and badges below are stale by design; see [`main`](https://github.com/coccinella-labs/harpertoken) for the current version.
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/coccinella-labs/harpertoken/master/.github/assets/thumbnail.png" alt="harpertoken" width="100%">
 </p>
