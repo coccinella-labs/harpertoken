@@ -841,7 +841,8 @@ pytest<span class="w"> </span>tests/
 that the next step deletes, so the published branch is never overwritten. <code>harpertoken/clue</code>
 is only replaced by the <code>publish-model</code> job, which trains and pushes when the version in
 <code>__version__.py</code> has no matching git tag. The Hub model is therefore stable between
-releases.</p>
+releases. <code>model_card.md</code> is the single writer for <code>clue</code>'s card: the <code>sync-card</code> job
+re-uploads it on every push, so do not edit that card on the Hub directly.</p>
 <p>The release job builds a Docker image on the same condition, and creates the release tag
 itself.</p>
 <h2 id="docker">Docker<a class="headerlink" href="#docker" title="Permanent link">&para;</a></h2>
