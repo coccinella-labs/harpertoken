@@ -720,7 +720,7 @@ pytest<span class="w"> </span>tests/
 <h2 id="cicd">CI/CD<a class="headerlink" href="#cicd" title="Permanent link">&para;</a></h2>
 <p>This project uses GitHub Actions for continuous integration, model training, and Docker for containerization.</p>
 <ul>
-<li><strong>Linting</strong>: Flake8, Black, MyPy on every push/PR.</li>
+<li><strong>Linting</strong>: Flake8 and Black on every push/PR, via pre-commit.</li>
 <li><strong>Testing</strong>: Pytest unit tests, syntax checks, import tests, and post-training validation.</li>
 <li><strong>Training</strong>: Fine-tunes the model on a SQuAD subset with configurable epochs/batch/LR.</li>
 <li><strong>Hugging Face Upload</strong>: Pushes fine-tuned model and tokenizer to HF Hub with model card (requires <code>HF_TOKEN</code> secret).</li>

@@ -836,11 +836,14 @@ and model card. Change <code>scripts/train.py:101</code> if the output needs to 
 pytest<span class="w"> </span>tests/
 </code></pre></div>
 <p><code>.github/workflows/ci.yml</code> runs pre commit on every push, then tests on Python 3.10 and
-3.11. The training step in CI runs with <code>FT_UPLOAD=true</code>, so every push to <code>main</code> retrains
-and reuploads <code>harpertoken/clue</code>. The Hub model is therefore not a stable artifact between
-runs.</p>
-<p>The release job builds a Docker image only when the version in <code>__version__.py</code> has no
-matching git tag, and creates the release tag itself.</p>
+3.11. Publishing is a release step, not a side effect of every push: <code>ci-test</code> exercises
+<code>push_to_hub</code> on the 3.11 leg only, against a <code>ci-smoke</code> branch on <code>harpertoken/clue</code>
+that the next step deletes, so the published branch is never overwritten. <code>harpertoken/clue</code>
+is only replaced by the <code>publish-model</code> job, which trains and pushes when the version in
+<code>__version__.py</code> has no matching git tag. The Hub model is therefore stable between
+releases.</p>
+<p>The release job builds a Docker image on the same condition, and creates the release tag
+itself.</p>
 <h2 id="docker">Docker<a class="headerlink" href="#docker" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>harpertoken-convai-finetune<span class="w"> </span>.
 docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>harpertoken-convai-finetune
