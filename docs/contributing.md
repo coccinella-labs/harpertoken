@@ -54,7 +54,7 @@ Tests include data preprocessing validation.
 
 This project uses GitHub Actions for continuous integration, model training, and Docker for containerization.
 
-- **Linting**: Flake8, Black, MyPy on every push/PR.
+- **Linting**: Flake8 and Black on every push/PR, via pre-commit.
 - **Testing**: Pytest unit tests, syntax checks, import tests, and post-training validation.
 - **Training**: Fine-tunes the model on a SQuAD subset with configurable epochs/batch/LR.
 - **Hugging Face Upload**: Pushes fine-tuned model and tokenizer to HF Hub with model card (requires `HF_TOKEN` secret).

@@ -128,12 +128,15 @@ pytest tests/
 ```
 
 `.github/workflows/ci.yml` runs pre commit on every push, then tests on Python 3.10 and
-3.11. The training step in CI runs with `FT_UPLOAD=true`, so every push to `main` retrains
-and reuploads `harpertoken/clue`. The Hub model is therefore not a stable artifact between
-runs.
+3.11. Publishing is a release step, not a side effect of every push: `ci-test` exercises
+`push_to_hub` on the 3.11 leg only, against a `ci-smoke` branch on `harpertoken/clue`
+that the next step deletes, so the published branch is never overwritten. `harpertoken/clue`
+is only replaced by the `publish-model` job, which trains and pushes when the version in
+`__version__.py` has no matching git tag. The Hub model is therefore stable between
+releases.
 
-The release job builds a Docker image only when the version in `__version__.py` has no
-matching git tag, and creates the release tag itself.
+The release job builds a Docker image on the same condition, and creates the release tag
+itself.
 
 ## Docker
 
