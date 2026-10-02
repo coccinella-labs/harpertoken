@@ -41,7 +41,7 @@ start, end = int(out.start_logits.argmax()), int(out.end_logits.argmax())
 print(tok.decode(inputs.input_ids[0][start : end + 1]))
 ```
 
-On the three questions used to check `quiz` — the capital of France, the author of Hamlet, and the year the Eiffel Tower was completed — this checkpoint returns `paris`, `william shakespeare` and `1889`, the same answers. A thousand examples has not visibly degraded it, which is itself a reason to doubt that the fine-tuning taught much.
+On the three questions used to check `quiz` (the capital of France, the author of Hamlet, and the year the Eiffel Tower was completed), this checkpoint returns `paris`, `william shakespeare` and `1889`, the same answers. A thousand examples has not visibly degraded it, which is itself a reason to doubt that the fine-tuning taught much.
 
 ## Limitations
 
