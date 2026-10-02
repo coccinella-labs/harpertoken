@@ -42,10 +42,11 @@ This will:
 
 ## Uploading to Hugging Face
 
-Set `HF_TOKEN` env var for uploads:
+Set `HF_TOKEN` env var for uploads, then answer yes at the upload prompt
+(`FT_UPLOAD=true` answers it non-interactively):
 ```sh
 export HF_TOKEN=your_token
-./run.sh --upload
+FT_UPLOAD=true ./run.sh
 ```
 
 Get token from [Hugging Face settings](https://huggingface.co/settings/tokens).

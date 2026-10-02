@@ -25,8 +25,8 @@
 4. **Install Dependencies**:
     ```sh
     pip install -r requirements.txt
-    # Optional: Install code quality tools
-    pip install black flake8 mypy
+    # Optional: Install code quality tools (the ones pre-commit runs)
+    pip install black flake8
     ```
 
 ## Requirements
